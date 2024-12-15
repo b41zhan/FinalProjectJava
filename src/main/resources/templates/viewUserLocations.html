@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Все площадки</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+  <h1>Список всех площадок</h1>
+  <table class="table table-bordered">
+    <thead>
+    <tr>
+      <th>Фото</th>
+      <th>Название</th>
+      <th>Категория</th>
+      <th>Статус</th>
+      <th>Действие</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="location : ${locations}">
+      <td><img th:src="${location.photo}" alt="Фото" style="width: 100px;"></td>
+      <td><a th:href="@{/user/locations/{id}(id=${location.id})}" th:text="${location.name}"></a></td>
+      <td th:text="${location.category}"></td>
+      <td th:text="${location.status}"></td>
+      <td>
+        <form th:if="${location.status.name() == 'FREE'}"
+              th:action="@{/user/locations/book/{id}(id=${location.id})}"
+              method="post">
+          <button class="btn btn-primary">Забронировать</button>
+        </form>
+        <p th:if="${location.status.name() == 'BOOKED'}" class="text-muted">Забронировано</p>
+      </td>
+
+    </tr>
+    </tbody>
+  </table>
+  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+  <a href="/user" class="btn btn-default">Назад</a>
+</div>
+</body>
+</html>

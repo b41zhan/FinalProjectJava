@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои забронированные площадки</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1>Мои забронированные площадки</h1>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Фото</th>
+            <th>Название</th>
+            <th>Категория</th>
+            <th>Дата</th>
+            <th>Действие</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="location : ${locations}">
+            <td><img th:src="${location.photo}" alt="Фото" style="width: 100px;"></td>
+            <td th:text="${location.name}"></td>
+            <td th:text="${location.category}"></td>
+            <td th:text="${location.date}"></td>
+            <td>
+                <form th:action="@{/user/booked-locations/cancel/{id}(id=${location.id})}" method="post">
+                    <button class="btn btn-danger">Отменить бронирование</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a href="/user" class="btn btn-default">Назад</a>
+</div>
+</body>
+</html>

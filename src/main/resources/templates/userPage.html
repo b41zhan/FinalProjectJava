@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль пользователя</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <form th:action="@{/user/upload-photo}" method="post" enctype="multipart/form-data">
+                <div class="text-center">
+                    <img th:src="${user.profilePhoto != null ? user.profilePhoto : '/images/default-profile.png'}"
+                         alt="Фото профиля" class="img-circle" style="width: 150px; height: 150px; cursor: pointer;">
+                    <input type="file" name="photo" style="display: none;" id="photoInput">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Загрузить фото</button>
+            </form>
+        </div>
+        <div class="col-md-9">
+            <h1>Добро пожаловать, <span th:text="${user.username}">Имя</span></h1>
+            <p>Email: <span th:text="${user.email}">example@mail.com</span></p>
+            <div class="buttons">
+                <a href="/user/locations" class="btn btn-primary">Просмотр всех площадок</a>
+                <a href="/user/booked-locations" class="btn btn-primary">Мои забронированные площадки</a>
+                <a href="/user/change-password" class="btn btn-warning">Изменить пароль</a>
+                <a href="/logout" class="btn btn-danger">Выйти</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.querySelector('img[alt="Фото профиля"]').addEventListener('click', function () {
+        document.getElementById('photoInput').click();
+    });
+</script>
+</body>
+</html>

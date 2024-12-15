@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детали площадки</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1 th:text="${location.name}"></h1>
+    <img th:src="${location.photo}" alt="Фото" style="width: 400px;">
+    <p>Категория: <span th:text="${location.category}"></span></p>
+    <p>Статус: <span th:text="${location.status}"></span></p>
+    <p>Адрес: <span th:text="${location.address}"></span></p>
+    <p>Описание: <span th:text="${location.description}"></span></p>
+    <p>Удобства: <span th:text="${location.amenities}"></span></p>
+    <p>Рейтинг: <span th:text="${location.rating}"></span></p>
+    <p>Дата: <span th:text="${location.date}"></span></p>
+    <a href="/user/locations" class="btn btn-default">Назад</a>
+</div>
+</body>
+</html>

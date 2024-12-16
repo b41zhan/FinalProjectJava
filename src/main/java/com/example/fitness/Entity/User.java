@@ -1,9 +1,7 @@
 package com.example.fitness.Entity;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -22,6 +20,7 @@ public class User {
     private LocalDateTime createdAt = LocalDateTime.now();
     @Column(name = "profile_photo")
     private String profilePhoto;
+    private String resetCode;
 
     public Long getId() {
         return id;
@@ -77,6 +76,14 @@ public class User {
 
     public void setProfilePhoto(String profilePhoto) {
         this.profilePhoto = profilePhoto;
+    }
+
+    public String getResetCode() {
+        return resetCode;
+    }
+
+    public void setResetCode(String resetCode) {
+        this.resetCode = resetCode;
     }
 }
 

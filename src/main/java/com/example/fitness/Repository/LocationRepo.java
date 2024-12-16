@@ -13,10 +13,7 @@ public interface LocationRepo extends JpaRepository<Location, Long> {
     List<Location> findByStatus(String status);
     List<Location> findByNameContainingIgnoreCase(String name);
     Page<Location> findByStatus(Status status, Pageable pageable);
-
-    // Метод для поиска по имени
     Page<Location> findByNameContainingIgnoreCase(String name, Pageable pageable);
-
     List<Location> findByUser(User user);
     List<Location> findByBookedBy(User user);
 }

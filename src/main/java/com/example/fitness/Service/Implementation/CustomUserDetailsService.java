@@ -1,7 +1,4 @@
 package com.example.fitness.Service.Implementation;
-
-
-
 import com.example.fitness.Entity.User;
 import com.example.fitness.Repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;

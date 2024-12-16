@@ -1,7 +1,7 @@
 package com.example.fitness.Controller;
 
-
 import com.example.fitness.Entity.*;
+import com.example.fitness.Service.EmailService;
 import com.example.fitness.Service.Implementation.UserServiceImpl;
 import com.example.fitness.Service.LocationService;
 import com.example.fitness.Service.PhotoService;
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,14 +23,17 @@ public class MainController {
     private final UserServiceImpl userService;
     private final LocationService locationService;
     private final PhotoService photoService;
+    private final EmailService emailService;
 
     @Autowired
     public MainController(UserServiceImpl userService,
                           LocationService locationService,
-                          PhotoService photoService) {
+                          PhotoService photoService,
+                          EmailService emailService) {
         this.userService = userService;
         this.locationService = locationService;
         this.photoService = photoService;
+        this.emailService = emailService;
     }
 
     @GetMapping("/user")
@@ -47,7 +51,6 @@ public class MainController {
         return "userPage";
     }
 
-    // Страница всех площадок
     @GetMapping("/user/locations")
     public String viewAllLocations(Model model) {
         List<Location> locations = locationService.findAll();
@@ -55,7 +58,6 @@ public class MainController {
         return "viewUserLocations";
     }
 
-    // Подробная информация о площадке
     @GetMapping("/user/locations/{id}")
     public String viewUserLocationDetails(@PathVariable Long id, Model model) {
         Location location = locationService.findById(id);
@@ -66,7 +68,6 @@ public class MainController {
         return "locationDetails";
     }
 
-    // Забронировать площадку
     @PostMapping("/user/locations/book/{id}")
     public String bookLocation(@PathVariable Long id,
                                @AuthenticationPrincipal UserDetails currentUser,
@@ -109,18 +110,16 @@ public class MainController {
             return "redirect:/login";
         }
 
-        // Найти площадку
         Location location = locationService.findById(id);
         if (location != null && location.getUser() != null && location.getUser().equals(user)) {
-            location.setStatus(Status.FREE); // Устанавливаем статус "FREE"
-            location.setUser(null);         // Убираем связь с пользователем
-            locationService.save(location); // Сохраняем изменения
+            location.setStatus(Status.FREE);
+            location.setUser(null);
+            locationService.save(location);
         }
 
         return "redirect:/user/booked-locations";
     }
 
-    // Забронированные площадки
     @GetMapping("/user/booked-locations")
     public String viewBookedLocations(Model model,
                                       @AuthenticationPrincipal UserDetails currentUser) {
@@ -137,7 +136,6 @@ public class MainController {
         model.addAttribute("locations", bookedLocations);
         return "viewBookedLocations";
     }
-
 
     @PostMapping("/user/upload-photo")
     public String uploadUserPhoto(@RequestParam("photo") MultipartFile photo,
@@ -198,7 +196,6 @@ public class MainController {
         }
     }
 
-
     @GetMapping("/admin/users")
     public String viewUsers(Model model) {
         List<User> users = userService.findAll();
@@ -224,10 +221,9 @@ public class MainController {
 
         if (status != null && !status.isEmpty()) {
             try {
-                Status enumStatus = Status.valueOf(status.toUpperCase()); // Преобразуем строку в Enum
+                Status enumStatus = Status.valueOf(status.toUpperCase());
                 locationPage = locationService.findByStatus(enumStatus, PageRequest.of(page, pageSize));
             } catch (IllegalArgumentException e) {
-                // Если статус невалиден, возвращаем пустую страницу
                 model.addAttribute("locations", List.of());
                 model.addAttribute("currentPage", page);
                 model.addAttribute("totalPages", 0);
@@ -250,9 +246,6 @@ public class MainController {
         return "viewLocations";
     }
 
-
-
-    // Подробная информация о площадке
     @GetMapping("/admin/locations/{id}")
     public String viewLocationDetails(@PathVariable Long id, Model model) {
         Location location = locationService.findById(id);
@@ -263,7 +256,6 @@ public class MainController {
         return "locationDetails";
     }
 
-    // Добавление новой площадки
     @GetMapping("/admin/locations/add")
     public String addLocationForm(Model model) {
         model.addAttribute("location", new Location());
@@ -284,4 +276,45 @@ public class MainController {
         return "redirect:/admin/locations";
     }
 
+    @GetMapping("/reset-password")
+    public String changePasswordPage(Model model) {
+        System.out.println("GET request to /reset-password received");
+        model.addAttribute("email", "");
+        return "resetPassword";
+    }
+
+    @PostMapping("/sendCode")
+    public String sendPasswordResetCode(@RequestParam("email") String email, Model model) {
+        User user = userService.findByEmail(email);
+        if (user == null) {
+            model.addAttribute("error", "Email not found.");
+            return "resetPassword";
+        }
+        String code = String.valueOf((int) (Math.random() * 1000000));
+        emailService.sendEmail(user.getEmail(), "Password Reset Code", "Your password reset code is: " + code);
+        userService.savePasswordResetCode(user, code);
+
+        model.addAttribute("message", "Verification code sent to your email.");
+        model.addAttribute("email", email);
+        return "resetPassword";
+    }
+
+
+    @PostMapping("/reset-password")
+    public String changePassword(@RequestParam("email") String email,
+                                 @RequestParam("code") String code,
+                                 @RequestParam("newPassword") String newPassword,
+                                 Model model) {
+        User user = userService.findByEmail(email);
+        if (user == null || !userService.isResetCodeValid(user, code)) {
+            model.addAttribute("error", "Invalid code or email.");
+            return "resetPassword";
+        }
+
+        userService.updatePassword(user, newPassword);
+        SecurityContextHolder.clearContext();
+
+        model.addAttribute("message", "Your password has been reset successfully! Please log in with your new password.");
+        return "redirect:/login";
+    }
 }

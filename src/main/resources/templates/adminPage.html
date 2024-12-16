@@ -1,14 +1,94 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Админ панель</title>
+    <title>Admin Panel</title>
+    <style>
+        /* Общий стиль страницы */
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom right, #0d3a58, #4680b2, #d2e6f3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Контейнер */
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #ffffff; /* Белый текст */
+            margin-bottom: 30px;
+        }
+
+        /* Кнопки */
+        .button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff; /* Белый текст */
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.03);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Линия разделителя */
+        .line {
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            margin: 20px 0;
+        }
+
+        /* Ссылка выхода */
+        .logout {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .logout a {
+            color: #FF3B30; /* Ярко-красный */
+            font-weight: bold;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .logout a:hover {
+            color: #e12e25;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-<h1>Добро пожаловать, Администратор!</h1>
-<div>
-    <button onclick="window.location.href='/admin/locations'">Просмотр площадок</button>
-    <button onclick="window.location.href='/admin/users'">Просмотр пользователей</button>
+<div class="container">
+    <h1>Admin Panel</h1>
+    <a href="/admin/locations" class="button">View Locations</a>
+    <a href="/admin/users" class="button">View Users</a>
+    <div class="line"></div>
+    <div class="logout">
+        <a href="/logout">Logout</a>
+    </div>
 </div>
-<a href="/logout">Выйти</a>
 </body>
 </html>

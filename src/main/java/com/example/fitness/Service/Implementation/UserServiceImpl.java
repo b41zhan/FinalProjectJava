@@ -1,7 +1,5 @@
 package com.example.fitness.Service.Implementation;
 
-
-
 import com.example.fitness.Entity.User;
 import com.example.fitness.Repository.UserRepo;
 import com.example.fitness.Service.UserService;
@@ -14,13 +12,13 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
-    @Autowired
-    public UserServiceImpl(UserRepo userRepo) {
-        this.userRepo = userRepo;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public PasswordEncoder passwordEncoder;
+    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder) {
+        this.userRepo = userRepo;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public User findByEmail(String email) {
@@ -32,10 +30,12 @@ public class UserServiceImpl implements UserService {
         return userRepo.findByUsername(username);
     }
 
+    @Override
     public void deleteUserById(Long id) {
         userRepo.deleteById(id);
     }
 
+    @Override
     public User saveUserWithPhoto(User user) {
         return userRepo.save(user);
     }
@@ -51,8 +51,28 @@ public class UserServiceImpl implements UserService {
         return userRepo.findByEmail(email);
     }
 
+    @Override
     public List<User> findAll() {
-        return userRepo.findAll(); // Используем метод findAll из UserRepo
+        return userRepo.findAll();
     }
 
+    @Override
+    public void savePasswordResetCode(User user, String code) {
+        user.setResetCode(code);
+        userRepo.save(user);
+    }
+
+    @Override
+    public boolean isResetCodeValid(User user, String code) {
+        return code.equals(user.getResetCode());
+    }
+
+    @Override
+    public void updatePassword(User user, String newPassword) {
+        System.out.println("Updating password for user: " + user.getEmail());
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        System.out.println("Encoded password: " + encodedPassword);
+        user.setPassword(encodedPassword);
+        userRepo.save(user);
+    }
 }

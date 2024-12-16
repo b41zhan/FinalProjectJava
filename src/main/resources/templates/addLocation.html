@@ -3,78 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Добавить новую площадку</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <title>Add New Location</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #FFFFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 700px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            padding: 30px;
+            border: 1px solid #18458B;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: #FFFFFF;
+        }
+
+        h1 {
+            font-size: 30px;
+            color: #18458B;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 16px;
+            font-weight: bold;
+            color: #18458B;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        input[type="text"], input[type="date"], textarea {
+            width: 96.2%;
+            padding: 12px;
+            font-size: 14px;
+            border: 1px solid #CCCCCC;
+            border-radius: 6px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 14px;
+            border: 1px solid #CCCCCC;
+            border-radius: 6px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: #4A90E2;
+            box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+            outline: none;
+        }
+
+        /* Поля в одной строке */
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        /* Кнопки */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #FFFFFF;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn-success {
+            background-color: #28A745;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-default {
+            background-color: #4A90E2;
+        }
+
+        .btn-default:hover {
+            background-color: #3B79D6;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Отступы для кнопок */
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
-    <h1 class="text-center">Добавить новую площадку</h1>
-    <form th:action="@{/admin/locations/add}" method="post" class="form-horizontal">
+    <h1>Add New Location</h1>
+    <form th:action="@{/admin/locations/add}" method="post">
         <div class="form-group">
-            <label for="name" class="col-sm-2 control-label">Название:</label>
-            <div class="col-sm-10">
-                <input type="text" id="name" name="name" class="form-control" placeholder="Введите название площадки" required>
-            </div>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter location name" required>
         </div>
 
-        <div class="form-group">
-            <label for="category" class="col-sm-2 control-label">Категория:</label>
-            <div class="col-sm-10">
-                <select id="category" name="category" class="form-control" required>
-                    <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}">Выберите категорию</option>
+        <!-- Категория и Статус в одной строке -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="category">Category:</label>
+                <select id="category" name="category" required>
+                    <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}">Select Category</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="status">Status:</label>
+                <select id="status" name="status" required>
+                    <option th:each="stat : ${statuses}" th:value="${stat}" th:text="${stat}">Select Status</option>
                 </select>
             </div>
         </div>
 
         <div class="form-group">
-            <label for="status" class="col-sm-2 control-label">Статус:</label>
-            <div class="col-sm-10">
-                <select id="status" name="status" class="form-control" required>
-                    <option th:each="stat : ${statuses}" th:value="${stat}" th:text="${stat}">Выберите статус</option>
-                </select>
-            </div>
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" placeholder="Enter location address" required>
         </div>
 
         <div class="form-group">
-            <label for="address" class="col-sm-2 control-label">Адрес:</label>
-            <div class="col-sm-10">
-                <input type="text" id="address" name="address" class="form-control" placeholder="Введите адрес площадки" required>
-            </div>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4" placeholder="Enter description" required></textarea>
         </div>
 
         <div class="form-group">
-            <label for="description" class="col-sm-2 control-label">Описание:</label>
-            <div class="col-sm-10">
-                <textarea id="description" name="description" class="form-control" placeholder="Введите описание" rows="4" required></textarea>
-            </div>
+            <label for="amenities">Amenities:</label>
+            <input type="text" id="amenities" name="amenities" placeholder="Enter amenities" required>
         </div>
 
         <div class="form-group">
-            <label for="amenities" class="col-sm-2 control-label">Удобства:</label>
-            <div class="col-sm-10">
-                <input type="text" id="amenities" name="amenities" class="form-control" placeholder="Введите удобства площадки" required>
-            </div>
+            <label for="photo">Photo URL:</label>
+            <input type="text" id="photo" name="photo" placeholder="Enter photo URL" required>
         </div>
 
         <div class="form-group">
-            <label for="photo" class="col-sm-2 control-label">Фото (URL):</label>
-            <div class="col-sm-10">
-                <input type="text" id="photo" name="photo" class="form-control" placeholder="Введите URL фотографии" required>
-            </div>
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
         </div>
 
-        <div class="form-group">
-            <label for="date" class="col-sm-2 control-label">Дата:</label>
-            <div class="col-sm-10">
-                <input type="date" id="date" name="date" class="form-control" required>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-success">Добавить площадку</button>
-                <a href="/admin/locations" class="btn btn-default">Назад</a>
-            </div>
+        <!-- Кнопки -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success">Add Location</button>
+            <a href="/admin/locations" class="btn btn-default">Back</a>
         </div>
     </form>
 </div>

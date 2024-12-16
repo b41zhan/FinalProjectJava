@@ -8,6 +8,7 @@ import com.example.fitness.Service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,6 +37,26 @@ public class MainController {
         this.emailService = emailService;
     }
 
+    @GetMapping("/home")
+    public String home(@AuthenticationPrincipal UserDetails currentUser) {
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
+
+        User user = userService.findByUsername(currentUser.getUsername());
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        if ("ROLE_ADMIN".equals(user.getRole())) {
+            return "redirect:/admin";
+        } else if ("ROLE_USER".equals(user.getRole())) {
+            return "redirect:/user";
+        }
+
+        return "redirect:/login";
+    }
+
     @GetMapping("/user")
     public String userPage(Model model, @AuthenticationPrincipal UserDetails currentUser) {
         if (currentUser == null) {
@@ -52,9 +73,53 @@ public class MainController {
     }
 
     @GetMapping("/user/locations")
-    public String viewAllLocations(Model model) {
-        List<Location> locations = locationService.findAll();
-        model.addAttribute("locations", locations);
+    public String viewAllLocations(
+            Model model,
+            @RequestParam(value = "category", required = false) String category,
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "3") int size) {
+
+        if (page < 0) {
+            return "redirect:/user/locations?page=0&size=" + size + "&search=" + (search != null ? search : "")
+                    + "&status=" + (status != null ? status : "") + "&category=" + (category != null ? category : "");
+        }
+
+        Page<Location> locationPage;
+        Pageable pageable = PageRequest.of(page, size);
+
+        try {
+            if (category != null && !category.isEmpty() && status != null && !status.isEmpty()) {
+                Category enumCategory = Category.valueOf(category.toUpperCase());
+                Status enumStatus = Status.valueOf(status.toUpperCase());
+                locationPage = locationService.findByCategoryAndStatusAndName(enumCategory, enumStatus, search, pageable);
+            } else if (category != null && !category.isEmpty()) {
+                Category enumCategory = Category.valueOf(category.toUpperCase());
+                locationPage = locationService.findByCategoryAndName(enumCategory, search, pageable);
+            } else if (status != null && !status.isEmpty()) {
+                Status enumStatus = Status.valueOf(status.toUpperCase());
+                locationPage = locationService.findByStatusAndName(enumStatus, search, pageable);
+            } else {
+                locationPage = locationService.findByName(search, pageable);
+            }
+        } catch (IllegalArgumentException e) {
+            locationPage = Page.empty();
+        }
+
+        if (page >= locationPage.getTotalPages() && locationPage.getTotalPages() > 0) {
+            return "redirect:/user/locations?page=" + (locationPage.getTotalPages() - 1) + "&size=" + size
+                    + "&search=" + (search != null ? search : "") + "&status=" + (status != null ? status : "")
+                    + "&category=" + (category != null ? category : "");
+        }
+
+        model.addAttribute("locations", locationPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", locationPage.getTotalPages());
+        model.addAttribute("search", search);
+        model.addAttribute("status", status);
+        model.addAttribute("category", category);
+
         return "viewUserLocations";
     }
 
@@ -65,7 +130,7 @@ public class MainController {
             return "redirect:/user/locations";
         }
         model.addAttribute("location", location);
-        return "locationDetails";
+        return "locationDetailsUser";
     }
 
     @PostMapping("/user/locations/book/{id}")
@@ -121,8 +186,11 @@ public class MainController {
     }
 
     @GetMapping("/user/booked-locations")
-    public String viewBookedLocations(Model model,
-                                      @AuthenticationPrincipal UserDetails currentUser) {
+    public String viewBookedLocations(
+            Model model,
+            @AuthenticationPrincipal UserDetails currentUser,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "3") int size) {
         if (currentUser == null) {
             return "redirect:/login";
         }
@@ -132,9 +200,37 @@ public class MainController {
             return "redirect:/login";
         }
 
-        List<Location> bookedLocations = locationService.findByUser(user);
-        model.addAttribute("locations", bookedLocations);
+        if (page < 0) {
+            return "redirect:/user/booked-locations?page=0&size=" + size;
+        }
+
+        Page<Location> bookedLocationsPage = locationService.findByUser(user, PageRequest.of(page, size));
+
+        if (page >= bookedLocationsPage.getTotalPages() && bookedLocationsPage.getTotalPages() > 0) {
+            return "redirect:/user/booked-locations?page=" + (bookedLocationsPage.getTotalPages() - 1) + "&size=" + size;
+        }
+
+        model.addAttribute("locations", bookedLocationsPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", bookedLocationsPage.getTotalPages());
+
         return "viewBookedLocations";
+    }
+
+    @GetMapping("/user/booked-locations/{id}")
+    public String viewBookedLocationDetails(@PathVariable Long id, Model model) {
+        Location location = locationService.findById(id);
+        if (location == null) {
+            return "redirect:/user/booked-locations";
+        }
+        model.addAttribute("location", location);
+        return "locationDetails";
+    }
+
+
+    @GetMapping("/user/filter-locations")
+    public String filterLocationsPage() {
+        return "filterLocations";
     }
 
     @PostMapping("/user/upload-photo")
@@ -161,23 +257,47 @@ public class MainController {
         return "redirect:/user";
     }
 
-    @GetMapping("/home")
-    public String home(@AuthenticationPrincipal UserDetails currentUser) {
+    @GetMapping("/user/changePassword")
+    public String changePasswordPage(@AuthenticationPrincipal UserDetails currentUser, Model model) {
         if (currentUser == null) {
             return "redirect:/login";
         }
-
         User user = userService.findByUsername(currentUser.getUsername());
         if (user == null) {
             return "redirect:/login";
         }
+        model.addAttribute("email", user.getEmail());
+        return "changePassword";
+    }
 
-        if ("ROLE_ADMIN".equals(user.getRole())) {
-            return "redirect:/admin";
-        } else if ("ROLE_USER".equals(user.getRole())) {
-            return "redirect:/user";
+    @PostMapping("/user/sendCode")
+    public String sendPasswordResetCode(@AuthenticationPrincipal UserDetails currentUser, Model model) {
+        if (currentUser == null) {
+            return "redirect:/login";
         }
+        User user = userService.findByUsername(currentUser.getUsername());
+        if (user == null) {
+            return "redirect:/login";
+        }
+        String code = String.valueOf((int) (Math.random() * 1000000));
+        emailService.sendEmail(user.getEmail(), "Password Reset Code", "Your password reset code is: " + code);
+        userService.savePasswordResetCode(user, code);
+        model.addAttribute("email", user.getEmail());
+        model.addAttribute("message", "Verification code sent to your email.");
+        return "changePassword";
+    }
 
+    @PostMapping("/user/changePassword")
+    public String changePasswordUser(@RequestParam("email") String email,
+                                 @RequestParam("code") String code,
+                                 @RequestParam("newPassword") String newPassword,
+                                 Model model) {
+        User user = userService.findByEmail(email);
+        if (user == null || !userService.isResetCodeValid(user, code)) {
+            model.addAttribute("error", "Invalid code or email.");
+            return "changePassword";
+        }
+        userService.updatePassword(user, newPassword);
         return "redirect:/login";
     }
 
@@ -299,13 +419,12 @@ public class MainController {
         return "resetPassword";
     }
 
-
     @PostMapping("/reset-password")
     public String changePassword(@RequestParam("email") String email,
                                  @RequestParam("code") String code,
                                  @RequestParam("newPassword") String newPassword,
                                  Model model) {
-        User user = userService.findByEmail(email);
+        User user = userService.findUserByEmail(email);
         if (user == null || !userService.isResetCodeValid(user, code)) {
             model.addAttribute("error", "Invalid code or email.");
             return "resetPassword";

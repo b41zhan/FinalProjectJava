@@ -3,21 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Детали площадки</title>
+    <title>Location Details</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #FFFFFF;
+            color: #18458B;
+        }
+
+        .container {
+            width: 1100px;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #18458B;
+            font-size: 30px;
+            margin-bottom: 20px;
+            background: #f0f0f0;
+            padding: 10px 10px 10px 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .details-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .carousel {
+            width: 50%;
+            max-width: 500px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .carousel img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .details {
+            flex: 1;
+        }
+
+        .details {
+            font-size: 18px;
+            background: #f0f0f0;
+            padding: 40px;
+            line-height: 40px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .details span {
+            font-weight: bold;
+            color: #3B79D6;
+        }
+
+        .section-block {
+            margin-top: 30px;
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-block h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #18458B;
+        }
+
+        .btn-back {
+            margin-top: 20px;
+            background-color: #4A90E2;
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-back:hover {
+            text-decoration: none;
+            color: #FFFFFF;
+            background-color: #3B79D6;
+            transform: scale(1.01);
+        }
+    </style>
 </head>
 <body>
 <div class="container">
-    <h1 th:text="${location.name}"></h1>
-    <img th:src="${location.photo}" alt="Фото" style="width: 400px;">
-    <p>Категория: <span th:text="${location.category}"></span></p>
-    <p>Статус: <span th:text="${location.status}"></span></p>
-    <p>Адрес: <span th:text="${location.address}"></span></p>
-    <p>Описание: <span th:text="${location.description}"></span></p>
-    <p>Удобства: <span th:text="${location.amenities}"></span></p>
-    <p>Рейтинг: <span th:text="${location.rating}"></span></p>
-    <p>Дата: <span th:text="${location.date}"></span></p>
-    <a href="/user/locations" class="btn btn-default">Назад</a>
+    <h1 th:text="${location.name}">Location Name</h1>
+    <div class="details-container">
+        <div id="carouselExample" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="item active">
+                    <img th:src="${location.photo}" alt="Location Photo 1">
+                </div>
+                <div class="item">
+                    <img src="https://luxsolsport.ru/images/article/ploshchadka-dlya-voleybola-1.jpg" alt="Location Photo 2">
+                </div>
+                <div class="item">
+                    <img src="https://kotsport.ru/wp-content/uploads/2024/01/voleibol-stadion-14.webp" alt="Location Photo 3">
+                </div>
+            </div>
+            <a class="left carousel-control" href="#carouselExample" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+            </a>
+            <a class="right carousel-control" href="#carouselExample" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </a>
+        </div>
+
+        <div class="details">
+            <p>Category: <span th:text="${location.category}">Category</span></p>
+            <p>Status: <span th:text="${location.status}">Status</span></p>
+            <p>Address: <span th:text="${location.address}">Address</span></p>
+            <p>Rating: <span th:text="${location.rating}">Rating</span></p>
+            <p>Date: <span th:text="${location.date}">Date</span></p>
+        </div>
+    </div>
+
+    <div class="section-block">
+        <h3>Description</h3>
+        <p th:text="${location.description}">This is a description of the location.</p>
+    </div>
+
+    <div class="section-block amenities">
+        <h3>Amenities</h3>
+        <ul>
+            <li th:each="amenity : ${location.amenities}" th:text="${amenity}"></li>
+        </ul>
+    </div>
+
+    <a href="/admin/locations" class="btn-back">&larr; Back to Locations</a>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facilities</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #F9F9F9;
+            color: #18458B;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        h1 {
+            width: 100%;
+            padding: 20px 0 20px 0;
+            background-color: #aec6ea;
+            text-align: center;
+            margin-top: -5px;
+            margin-bottom: 30px;
+            color: #18458B;
+            font-size: 2em;
+        }
+
+        p {
+            text-align: center;
+            font-size: 20px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 10px;
+        }
+
+        .card {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-title {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            color: #FFFFFF;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            padding: 10px;
+            text-transform: uppercase;
+        }
+
+        .btn-back {
+            display: block;
+            margin: 20px auto;
+            background-color: #4A90E2;
+            color: #FFFFFF;
+            text-align: center;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-back:hover {
+            background-color: #3B79D6;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+<h1>Choose a Facility Category</h1>
+<p>Connect with the ideal venue for your next event effortlessly on Facilitron – the world's <br>
+    largest public spaces rental marketplace.</p>
+<div class="container">
+    <div class="card" onclick="window.location.href='/user/locations?category=FOOTBALL'">
+        <img src="https://media.tenor.com/9vMX0q_fDfQAAAAM/scott-sterling.gif" alt="Football Fields">
+        <div class="card-title">Football</div>
+    </div>
+    <div class="card" onclick="window.location.href='/user/locations?category=VOLLEYBALL'">
+        <img src="https://i.gifer.com/origin/41/419f83d1fc977bd7ee7b171785a9265f_w200.webp" alt="Volleyball Courts">
+        <div class="card-title">Volleyball</div>
+    </div>
+    <div class="card" onclick="window.location.href='/user/locations?category=BASKETBALL'">
+        <img src="https://i.gifer.com/origin/dd/dd7012a11dbde58f9d8b025f53593559_w200.webp" alt="Basketball Courts">
+        <div class="card-title">Basketball</div>
+    </div>
+</div>
+<button class="btn-back" onclick="window.location.href='/user'">
+    &larr; Back to Profile
+</button>
+</body>
+</html>

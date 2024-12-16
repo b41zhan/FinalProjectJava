@@ -3,37 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мои забронированные площадки</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <title>My Booked Locations</title>
+    <style>
+        * {
+            text-decoration: none;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #FFFFFF;
+            color: #333333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            background: #FFFFFF;
+            margin-top: 10px;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #18458B;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background-color: #FFFFFF;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: #18458B;
+            color: #FFFFFF;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            font-size: 16px;
+            border-bottom: 1px solid #CCCCCC;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #F9F9F9;
+        }
+
+        tbody tr:hover {
+            background-color: #E9F3FF;
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            object-fit: cover;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn {
+            padding: 10px 15px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #FFFFFF;
+            border: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-danger {
+            background-color: #FF3B30;
+        }
+
+        .btn-danger:hover {
+            background-color: #D93228;
+            transform: scale(1.02);
+        }
+
+        .btn-default {
+            padding: 10px 15px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #FFFFFF;
+            border: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            cursor: pointer;
+            background-color: #4A90E2;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .btn-default:hover {
+            background-color: #3B79D6;
+            transform: scale(1.02);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            list-style: none;
+            padding: 0;
+        }
+
+        .pagination li {
+            margin: 0 5px;
+        }
+
+        .pagination a {
+            color: #18458B;
+            padding: 10px 15px;
+            text-decoration: none;
+            border: 1px solid #CCCCCC;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .pagination a:hover, .pagination .active a {
+            background-color: #4A90E2;
+            color: #FFFFFF;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
-    <h1>Мои забронированные площадки</h1>
-    <table class="table table-bordered">
+    <h1>My Booked Locations</h1>
+    <table>
         <thead>
         <tr>
-            <th>Фото</th>
-            <th>Название</th>
-            <th>Категория</th>
-            <th>Дата</th>
-            <th>Действие</th>
+            <th>Photo</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Date</th>
+            <th>Action</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="location : ${locations}">
-            <td><img th:src="${location.photo}" alt="Фото" style="width: 100px;"></td>
-            <td th:text="${location.name}"></td>
-            <td th:text="${location.category}"></td>
-            <td th:text="${location.date}"></td>
+            <td>
+                <img th:src="${location.photo}" alt="Photo">
+            </td>
+            <td>
+                <a th:href="@{/user/booked-locations/{id}(id=${location.id})}" th:text="${location.name}"></a>
+            </td>
+            <td th:text="${location.category}">Category</td>
+            <td th:text="${location.date}">Date</td>
             <td>
                 <form th:action="@{/user/booked-locations/cancel/{id}(id=${location.id})}" method="post">
-                    <button class="btn btn-danger">Отменить бронирование</button>
+                    <button type="submit" class="btn btn-danger">Cancel Booking</button>
                 </form>
             </td>
         </tr>
         </tbody>
     </table>
-    <a href="/user" class="btn btn-default">Назад</a>
+
+    <nav th:if="${totalPages > 1}">
+        <ul class="pagination">
+            <li th:classappend="${currentPage == 0} ? 'disabled'">
+                <a th:href="@{/user/booked-locations(page=${currentPage - 1}, size=${3})}">&laquo;</a>
+            </li>
+            <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${currentPage == i} ? 'active'">
+                <a th:href="@{/user/booked-locations(page=${i}, size=${3})}" th:text="${i + 1}"></a>
+            </li>
+            <li th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+                <a th:href="@{/user/booked-locations(page=${currentPage + 1}, size=${3})}">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
+    <button class="btn-default" onclick="window.location.href='/user'">
+        &larr; Back to Profile
+    </button>
+
 </div>
 </body>
 </html>

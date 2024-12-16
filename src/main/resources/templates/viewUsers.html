@@ -1,32 +1,131 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Пользователи</title>
+    <title>Users List</title>
+    <style>
+        /* Общий стиль страницы */
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #FFFFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #18458B;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #18458B;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Таблица */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #FFFFFF;
+            border: 1px solid #CCCCCC;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        thead {
+            background: #18458B;
+            color: #FFFFFF;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            font-size: 16px;
+            border-bottom: 1px solid #CCCCCC;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #F9F9F9;
+        }
+
+        tbody tr:hover {
+            background-color: #E9F3FF;
+        }
+
+        /* Кнопки */
+        .delete-button {
+            background-color: #FF3B30;
+            color: #FFFFFF;
+            border: none;
+            padding: 8px 12px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .delete-button:hover {
+            background-color: #D93228;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transform: scale(1.02);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #18458B;
+            font-weight: bold;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #3B79D6;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-<h1>Список пользователей</h1>
-<table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Имя</th>
-        <th>Email</th>
-        <th>Действия</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="user : ${users}">
-        <td th:text="${user.id}"></td>
-        <td th:text="${user.username}"></td>
-        <td th:text="${user.email}"></td>
-        <td>
-            <form th:action="@{/admin/users/delete/{id}(id=${user.id})}" method="post">
-                <button type="submit">Удалить</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
-<a href="/admin">Назад</a>
+<div class="container">
+    <h1>Users List</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.email}"></td>
+            <td>
+                <form th:action="@{/admin/users/delete/{id}(id=${user.id})}" method="post">
+                    <button type="submit" class="delete-button">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div style="text-align: center;">
+        <a href="/admin" class="back-link">&larr; Back to Admin Panel</a>
+    </div>
+</div>
 </body>
 </html>

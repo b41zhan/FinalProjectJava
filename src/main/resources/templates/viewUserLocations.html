@@ -3,42 +3,239 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Все площадки</title>
+  <title>Locations List</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #FFFFFF;
+      color: #333333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      padding: 30px;
+      background: #FFFFFF;
+    }
+
+    h1 {
+      font-size: 36px;
+      color: #18458B;
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: bolder;
+    }
+
+    .top-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+
+    .form-inline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-grow: 1;
+    }
+
+    .form-inline .form-control {
+      padding: 8px 12px;
+      font-size: 16px;
+      height: 40px;
+      border: 1px solid #CCCCCC;
+      border-radius: 6px;
+      box-shadow: none;
+    }
+
+    .btn {
+      padding: 8px 15px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-primary {
+      background-color: #4A90E2;
+      color: #FFFFFF;
+    }
+
+    .btn-primary:hover {
+      background-color: #3B79D6;
+      transform: scale(1.01);
+    }
+
+    .btn-success {
+      background-color: #28A745;
+      color: #FFFFFF;
+      margin-left: 10px;
+    }
+
+    .btn-success:hover {
+      background-color: #218838;
+      transform: scale(1.01);
+    }
+
+    select.form-control {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background-color: #FFFFFF;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    thead {
+      background: #18458B;
+      color: #FFFFFF;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: center;
+      font-size: 16px;
+      border-bottom: 1px solid #CCCCCC;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #F9F9F9;
+    }
+
+    tbody tr:hover {
+      background-color: #E9F3FF;
+    }
+
+    img {
+      width: 100px;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      list-style: none;
+      padding: 0;
+    }
+
+    .pagination li {
+      margin: 0 5px;
+    }
+
+    .pagination a {
+      color: #18458B;
+      padding: 10px 15px;
+      text-decoration: none;
+      border: 1px solid #CCCCCC;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .pagination a:hover, .pagination .active a {
+      background-color: #4A90E2;
+      color: #FFFFFF;
+    }
+
+    .back-link {
+      display: block;
+      margin-top: 20px;
+      text-align: center;
+      color: #18458B;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .back-link:hover {
+      color: #3B79D6;
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
 <div class="container">
-  <h1>Список всех площадок</h1>
-  <table class="table table-bordered">
+  <h1>Locations List</h1>
+
+  <div class="top-controls">
+    <form method="get" action="/user/locations" class="form-inline">
+      <input type="text" name="search" class="form-control" placeholder="Search by name" th:value="${search}">
+      <select name="status" class="form-control">
+        <option value="" th:selected="${status == null or status.isEmpty()}">Filter by Status</option>
+        <option value="FREE" th:selected="${status == 'FREE'}">Free</option>
+        <option value="BOOKED" th:selected="${status == 'BOOKED'}">Booked</option>
+      </select>
+      <button type="submit" class="btn btn-primary">Apply</button>
+    </form>
+    <a href="/user/filter-locations" class="btn btn-success">Back to Filters</a>
+  </div>
+
+  <table>
     <thead>
     <tr>
-      <th>Фото</th>
-      <th>Название</th>
-      <th>Категория</th>
-      <th>Статус</th>
-      <th>Действие</th>
+      <th>Photo</th>
+      <th>Name</th>
+      <th>Category</th>
+      <th>Status</th>
+      <th>Action</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="location : ${locations}">
-      <td><img th:src="${location.photo}" alt="Фото" style="width: 100px;"></td>
-      <td><a th:href="@{/user/locations/{id}(id=${location.id})}" th:text="${location.name}"></a></td>
+      <td><img th:src="${location.photo}" alt="Location Photo"></td>
+      <td>
+        <a th:href="@{/user/locations/{id}(id=${location.id})}" th:text="${location.name}"
+           style="color: #4A90E2; text-decoration: none; font-weight: bold;"></a>
+      </td>
       <td th:text="${location.category}"></td>
       <td th:text="${location.status}"></td>
       <td>
         <form th:if="${location.status.name() == 'FREE'}"
-              th:action="@{/user/locations/book/{id}(id=${location.id})}"
-              method="post">
-          <button class="btn btn-primary">Забронировать</button>
+              th:action="@{/user/locations/book/{id}(id=${location.id})}" method="post">
+          <button class="btn btn-primary">Book</button>
         </form>
-        <p th:if="${location.status.name() == 'BOOKED'}" class="text-muted">Забронировано</p>
+        <p th:if="${location.status.name() == 'BOOKED'}" class="text-muted">Already Booked</p>
       </td>
-
     </tr>
     </tbody>
   </table>
-  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-  <a href="/user" class="btn btn-default">Назад</a>
+
+  <nav th:if="${totalPages > 1}">
+    <ul class="pagination">
+      <li th:classappend="${currentPage == 0} ? 'disabled'">
+        <a th:href="@{/user/locations(page=${currentPage - 1}, size=${size}, search=${search}, status=${status}, category=${category})}">&laquo;</a>
+      </li>
+      <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${currentPage == i} ? 'active'">
+        <a th:href="@{/user/locations(page=${i}, size=${size}, search=${search}, status=${status}, category=${category})}"
+           th:text="${i + 1}"></a>
+      </li>
+      <li th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+        <a th:href="@{/user/locations(page=${currentPage + 1}, size=${size}, search=${search}, status=${status}, category=${category})}">&raquo;</a>
+      </li>
+    </ul>
+  </nav>
+
+  <a href="/user" class="back-link">&larr; Back to Profile</a>
 </div>
 </body>
 </html>

@@ -1,5 +1,6 @@
 package com.example.fitness.Repository;
 
+import com.example.fitness.Entity.Category;
 import com.example.fitness.Entity.Location;
 import com.example.fitness.Entity.Status;
 import com.example.fitness.Entity.User;
@@ -16,4 +17,9 @@ public interface LocationRepo extends JpaRepository<Location, Long> {
     Page<Location> findByNameContainingIgnoreCase(String name, Pageable pageable);
     List<Location> findByUser(User user);
     List<Location> findByBookedBy(User user);
+    Page<Location> findByUser(User user, Pageable pageable);
+    List<Location> findByCategory(Category category);
+    Page<Location> findByCategoryAndStatusAndNameContainingIgnoreCase(Category category, Status status, String name, Pageable pageable);
+    Page<Location> findByCategoryAndNameContainingIgnoreCase(Category category, String name, Pageable pageable);
+    Page<Location> findByStatusAndNameContainingIgnoreCase(Status status, String name, Pageable pageable);
 }

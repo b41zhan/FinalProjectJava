@@ -3,70 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Список площадок</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <title>Locations List</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #FFFFFF;
+            color: #333333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            padding: 30px;
+            background: #FFFFFF;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #18458B;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 50%;
+        }
+
+        .top-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .top-controls a {
+            text-decoration: none;
+        }
+
+        .top-controls a:hover {
+            transform: scale(1.01);
+        }
+
+        .form-inline {
+            display: flex;
+            gap: 10px;
+            width: 70%;
+        }
+
+        .form-inline .form-control, .btn {
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: 1px solid #CCCCCC;
+        }
+
+        .btn-primary {
+            background-color: #4A90E2;
+            color: #FFFFFF;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background-color: #3B79D6;
+            transform: scale(1.01);
+        }
+
+        .btn-success {
+            background-color: #28A745;
+            color: #FFFFFF;
+            border: none;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-danger {
+            background-color: #D93228;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-danger:hover {
+            background-color: #cc3026;
+            transform: scale(1.01);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background-color: #FFFFFF;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: #18458B;
+            color: #FFFFFF;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            font-size: 16px;
+            border-bottom: 1px solid #CCCCCC;
+        }
+
+        td a {
+            text-decoration: none;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #F9F9F9;
+        }
+
+        tbody tr:hover {
+            background-color: #E9F3FF;
+        }
+
+        img {
+            width: 100px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            list-style: none;
+            padding: 0;
+        }
+
+        .pagination li {
+            margin: 0 5px;
+        }
+
+        .pagination a {
+            color: #18458B;
+            padding: 10px 15px;
+            text-decoration: none;
+            border: 1px solid #CCCCCC;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .pagination a:hover, .pagination .active a {
+            background-color: #4A90E2;
+            color: #FFFFFF;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #18458B;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            color: #3B79D6;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
-    <h1>Список площадок</h1>
-    <form method="get" action="/admin/locations" class="form-inline">
-        <div class="form-group">
-            <input type="text" name="search" class="form-control" placeholder="Поиск по названию" th:value="${search}">
-        </div>
-        <div class="form-group">
+    <h1>Locations List</h1>
+
+    <div class="top-controls">
+        <form method="get" action="/admin/locations" class="form-inline">
+            <input type="text" name="search" class="form-control" placeholder="Search by name" th:value="${search}">
             <select name="status" class="form-control">
-                <option value="" th:selected="${status == null or status.isEmpty()}">Фильтрация по статусу</option>
-                <option value="FREE" th:selected="${status == 'FREE'}">Свободно</option>
-                <option value="BOOKED" th:selected="${status == 'BOOKED'}">Забронировано</option>
+                <option value="" th:selected="${status == null or status.isEmpty()}">Filter by Status</option>
+                <option value="FREE" th:selected="${status == 'FREE'}">Free</option>
+                <option value="BOOKED" th:selected="${status == 'BOOKED'}">Booked</option>
             </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Применить</button>
-    </form>
-    <a href="/admin/locations/add" class="btn btn-success">Добавить новую площадку</a>
-    <table class="table table-bordered">
+            <button type="submit" class="btn btn-primary">Apply</button>
+        </form>
+        <a href="/admin/locations/add" class="btn btn-success">Add New Location</a>
+    </div>
+
+    <table>
         <thead>
         <tr>
-            <th>Фото</th>
-            <th>Название</th>
-            <th>Категория</th>
-            <th>Статус</th>
-            <th>Действие</th>
+            <th>Photo</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="location : ${locations}">
-            <td><img th:src="${location.photo}" alt="Фото" style="width: 100px;"></td>
+            <td><img th:src="${location.photo}" alt="Location Photo"></td>
             <td><a th:href="@{/admin/locations/{id}(id=${location.id})}" th:text="${location.name}"></a></td>
             <td th:text="${location.category}"></td>
             <td th:text="${location.status}"></td>
             <td>
                 <form th:action="@{/admin/locations/delete/{id}(id=${location.id})}" method="post">
-                    <button class="btn btn-danger">Удалить</button>
+                    <button class="btn btn-danger">Delete</button>
                 </form>
             </td>
         </tr>
         </tbody>
     </table>
 
-    <!-- Пагинация -->
-    <nav aria-label="Page navigation">
+    <nav>
         <ul class="pagination">
             <li th:classappend="${currentPage == 0} ? 'disabled'">
-                <a th:href="@{/admin/locations(page=${currentPage - 1}, status=${status}, search=${search})}" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
+                <a th:href="@{/admin/locations(page=${currentPage - 1}, status=${status}, search=${search})}">&laquo;</a>
             </li>
             <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${currentPage == i} ? 'active'">
-                <a th:href="@{/admin/locations(page=${i}, status=${status}, search=${search})}" th:text="${i + 1}">1</a>
+                <a th:href="@{/admin/locations(page=${i}, status=${status}, search=${search})}" th:text="${i + 1}"></a>
             </li>
             <li th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
-                <a th:href="@{/admin/locations(page=${currentPage + 1}, status=${status}, search=${search})}" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
+                <a th:href="@{/admin/locations(page=${currentPage + 1}, status=${status}, search=${search})}">&raquo;</a>
             </li>
         </ul>
     </nav>
-    <a href="/admin" class="btn btn-default">Назад</a>
+
+    <a href="/admin" class="back-link">&larr; Back to Admin Panel</a>
 </div>
 </body>
 </html>

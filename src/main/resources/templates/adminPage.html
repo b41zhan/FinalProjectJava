@@ -3,90 +3,140 @@
 <head>
     <title>Admin Panel</title>
     <style>
-        /* Общий стиль страницы */
         body {
             margin: 0;
             padding: 0;
             height: 100vh;
             font-family: Arial, sans-serif;
-            background: linear-gradient(to bottom right, #0d3a58, #4680b2, #d2e6f3);
+            background: #FFFFFF;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        /* Контейнер */
         .container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            padding: 40px;
+            width: 100%;
+            max-width: 1000px;
+            padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            width: 600px;
-            text-align: center;
+            border: 1px solid #18458B;
         }
 
         h1 {
-            font-size: 32px;
-            color: #ffffff; /* Белый текст */
-            margin-bottom: 30px;
+            font-size: 40px;
+            color: #18458B;
+            margin-bottom: 20px;
         }
 
-        /* Кнопки */
-        .button {
-            display: block;
-            width: 100%;
-            padding: 15px;
+        .card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #CCCCCC;
+            border-radius: 10px;
+            padding: 20px;
             margin-bottom: 20px;
-            text-align: center;
-            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            height: 150px;
+            max-width: 960px;
+        }
+
+        .card h2 {
+            font-size: 28px;
+            color: #18458B;
+            margin-bottom: 10px;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #4A90E2;
+            color: #FFFFFF;
             border: none;
-            border-radius: 8px;
-            font-size: 18px;
+            border-radius: 6px;
+            font-size: 14px;
             font-weight: bold;
-            color: #ffffff; /* Белый текст */
-            text-decoration: none;
-            transition: all 0.3s ease;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .button:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-            transform: scale(1.03);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            background-color: #3B79D6;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        /* Линия разделителя */
-        .line {
-            border-top: 1px solid rgba(255, 255, 255, 0.3);
-            margin: 20px 0;
+        .button .arrow {
+            margin-left: 8px;
+            display: flex;
+            align-items: center;
         }
 
-        /* Ссылка выхода */
-        .logout {
+        .photo {
+            flex: 0 0 40%;
+            height: 150px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .photo1 {
+            background: url("https://www.shutterstock.com/shutterstock/photos/2192941657/display_1500/stock-vector-empty-basketball-court-cartoon-illustration-vector-interior-design-of-sports-hall-to-play-team-2192941657.jpg") no-repeat center center;
+            background-size: contain;
+        }
+
+        .photo2 {
+            background: url("https://media.istockphoto.com/id/1311092302/it/vettoriale/insieme-di-persone-legate-ai-diversi-sport.jpg?s=170667a&w=0&k=20&c=jDkBcENu4NN7RBt86dC3I5t7wYWBXVGYW14RMNy0Fgw=") no-repeat center center;
+            background-size: contain;
+        }
+
+        .logout-link {
             text-align: center;
-            margin-top: 10px;
+            margin-top: 20px;
         }
 
-        .logout a {
-            color: #FF3B30; /* Ярко-красный */
+        .logout-link a {
+            color: #FF3B30;
             font-weight: bold;
             text-decoration: none;
             transition: color 0.3s ease;
         }
 
-        .logout a:hover {
-            color: #e12e25;
+        .logout-link a:hover {
+            color: #D93228;
             text-decoration: underline;
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>Admin Panel</h1>
-    <a href="/admin/locations" class="button">View Locations</a>
-    <a href="/admin/users" class="button">View Users</a>
-    <div class="line"></div>
-    <div class="logout">
+    <h1>Admin</h1>
+
+    <div class="card">
+        <div style="flex: 1;">
+            <h2>View Locations</h2>
+            <button class="button" onclick="window.location.href='/admin/locations'">
+                Show All Locations
+                <span class="arrow">&rarr;</span>
+            </button>
+        </div>
+        <div class="photo photo1"></div>
+    </div>
+
+    <div class="card">
+        <div style="flex: 1;">
+            <h2>View Users</h2>
+            <button class="button" onclick="window.location.href='/admin/users'">
+                Show All Users
+                <span class="arrow">&rarr;</span>
+            </button>
+        </div>
+        <div class="photo photo2"></div>
+    </div>
+
+    <div class="logout-link">
         <a href="/logout">Logout</a>
     </div>
 </div>

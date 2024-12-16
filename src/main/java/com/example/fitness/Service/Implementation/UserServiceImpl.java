@@ -1,7 +1,10 @@
 package com.example.fitness.Service.Implementation;
 
+import com.example.fitness.Entity.Location;
 import com.example.fitness.Entity.User;
+import com.example.fitness.Repository.LocationRepo;
 import com.example.fitness.Repository.UserRepo;
+import com.example.fitness.Service.LocationService;
 import com.example.fitness.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,11 +16,14 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
+    private final LocationService locationService;
 
     @Autowired
-    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder,
+                           LocationService locationService) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
+        this.locationService = locationService;
     }
 
     @Override
@@ -32,6 +38,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUserById(Long id) {
+        List<Location> userLocations = locationService.findByUser(userRepo.findById(id).orElse(null));
+        for (Location location : userLocations) {
+            location.setUser(null);
+            locationService.save(location);
+        }
         userRepo.deleteById(id);
     }
 

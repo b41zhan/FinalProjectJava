@@ -1,5 +1,6 @@
 package com.example.fitness.Service;
 
+import com.example.fitness.Entity.Category;
 import com.example.fitness.Entity.Location;
 import com.example.fitness.Entity.Status;
 import com.example.fitness.Entity.User;
@@ -62,6 +63,30 @@ public class LocationService {
 
     public List<Location> findByBookedBy(User user) {
         return locationRepo.findByBookedBy(user);
+    }
+
+    public Page<Location> findByUser(User user, Pageable pageable) {
+        return locationRepo.findByUser(user, pageable);
+    }
+
+    public List<Location> findByCategory(Category category) {
+        return locationRepo.findByCategory(category);
+    }
+
+    public Page<Location> findByCategoryAndStatusAndName(Category category, Status status, String name, Pageable pageable) {
+        return locationRepo.findByCategoryAndStatusAndNameContainingIgnoreCase(category, status, name != null ? name : "", pageable);
+    }
+
+    public Page<Location> findByCategoryAndName(Category category, String name, Pageable pageable) {
+        return locationRepo.findByCategoryAndNameContainingIgnoreCase(category, name != null ? name : "", pageable);
+    }
+
+    public Page<Location> findByStatusAndName(Status status, String name, Pageable pageable) {
+        return locationRepo.findByStatusAndNameContainingIgnoreCase(status, name != null ? name : "", pageable);
+    }
+
+    public Page<Location> findByName(String name, Pageable pageable) {
+        return locationRepo.findByNameContainingIgnoreCase(name != null ? name : "", pageable);
     }
 }
 

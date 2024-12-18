@@ -227,7 +227,6 @@ public class MainController {
         return "locationDetails";
     }
 
-
     @GetMapping("/user/filter-locations")
     public String filterLocationsPage() {
         return "filterLocations";

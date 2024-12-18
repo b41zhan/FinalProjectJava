@@ -239,6 +239,10 @@
     document.getElementById('profilePhoto').addEventListener('click', function () {
         document.getElementById('photoInput').click();
     });
+
+    document.getElementById('photoInput').addEventListener('change', function () {
+        this.closest('form').submit();
+    });
 </script>
 </body>
 </html>

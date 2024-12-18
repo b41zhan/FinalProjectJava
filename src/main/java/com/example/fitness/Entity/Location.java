@@ -1,8 +1,11 @@
 package com.example.fitness.Entity;
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 
+@NoArgsConstructor
 @Entity
 @Table(name = "locations")
 public class Location {
